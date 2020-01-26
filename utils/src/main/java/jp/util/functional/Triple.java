@@ -50,10 +50,10 @@ public final class Triple<L, M, R> {
         if (!(obj instanceof Triple)) {
             return false;
         }
-        Triple<?, ?, ?> casted = (Triple<?, ?, ?>) obj;
-        return Objects.equals(casted.getLeft(), left)
-                && Objects.equals(casted.getMiddle(), middle)
-                && Objects.equals(casted.getRight(), right);
+        Triple<?, ?, ?> cast = (Triple<?, ?, ?>) obj;
+        return Objects.equals(cast.getLeft(), left)
+                && Objects.equals(cast.getMiddle(), middle)
+                && Objects.equals(cast.getRight(), right);
     }
 
     @Override

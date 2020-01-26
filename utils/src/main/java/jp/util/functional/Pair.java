@@ -42,9 +42,9 @@ public final class Pair<L, R> {
         if (!(obj instanceof Pair)) {
             return false;
         }
-        Pair<?, ?> casted = (Pair<?, ?>) obj;
-        return Objects.equals(casted.getLeft(), left)
-                && Objects.equals(casted.getRight(), right);
+        Pair<?, ?> cast = (Pair<?, ?>) obj;
+        return Objects.equals(cast.getLeft(), left)
+                && Objects.equals(cast.getRight(), right);
     }
 
     @Override
