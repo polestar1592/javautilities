@@ -6,10 +6,10 @@ public interface MultiplicativeMonoid<T> extends Semigroup<T> {
 
     T multiply(T left, T right);
 
-    default T pow(T left, int n) {
-        T value = left;
-        for (int i = 1; i < n; i++) {
-            value = multiply(value, left);
+    default T pow(T base, long n) {
+        T value = base;
+        for (long i = 1; i < n; i++) {
+            value = multiply(value, base);
         }
         return value;
     }
