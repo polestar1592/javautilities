@@ -58,6 +58,6 @@ public final class Triple<L, M, R> {
 
     @Override
     public String toString() {
-        return String.format("Pair [left=%s, middle=%s, right=%s]", left, middle, right);
+        return String.format("Triple [left=%s, middle=%s, right=%s]", left, middle, right);
     }
 }
