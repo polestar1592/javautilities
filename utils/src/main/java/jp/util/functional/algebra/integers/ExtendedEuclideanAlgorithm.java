@@ -3,9 +3,9 @@ package jp.util.functional.algebra.integers;
 import jp.util.functional.Triple;
 
 // TODO math? utils?
-public final class EuclideanAlgorithm {
+public final class ExtendedEuclideanAlgorithm {
 
-    private EuclideanAlgorithm() {
+    private ExtendedEuclideanAlgorithm() {
     }
 
     public static long calculateGcd(long a, long b) {
@@ -43,7 +43,6 @@ public final class EuclideanAlgorithm {
             w = u0 - q * u1;
             u0 = u1;
             u1 = w;
-
         }
         return Triple.of(signA * v0, signB * u0, t);
     }

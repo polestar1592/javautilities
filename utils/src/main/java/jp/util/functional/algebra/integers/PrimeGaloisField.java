@@ -37,7 +37,7 @@ public class PrimeGaloisField implements Field<Long> {
 
     @Override
     public Long invert(Long x) {
-        return canonicalize(EuclideanAlgorithm.calculateInverse(canonicalize(x), order));
+        return canonicalize(ExtendedEuclideanAlgorithm.calculateInverse(canonicalize(x), order));
     }
 
     @Override
