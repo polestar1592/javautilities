@@ -69,6 +69,26 @@ public class CartesianVector {
         );
     }
 
+    boolean isZeroVector() {
+        return abs() == 0;
+    }
+
+    boolean isParallelTo(CartesianVector vector) {
+        if (this.isZeroVector() || vector.isZeroVector()) {
+            return false;
+        }
+        CartesianVector n1 = this.normalize();
+        CartesianVector n2 = vector.normalize();
+        return n1.equals(n2) || n1.equals(n2.invert());
+    }
+
+    boolean isVerticalTo(CartesianVector vector) {
+        if (this.isZeroVector() || vector.isZeroVector()) {
+            return false;
+        }
+        return this.dot(vector) == 0;
+    }
+
     public double getX() {
         return x;
     }
