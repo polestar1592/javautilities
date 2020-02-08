@@ -1,6 +1,6 @@
 package jp.util.functional.algebra;
 
-public interface MultiplicativeMonoid<T> extends Semigroup<T> {
+public interface Multiplicative<T> {
 
     T getOne();
 
@@ -12,10 +12,5 @@ public interface MultiplicativeMonoid<T> extends Semigroup<T> {
             value = multiply(value, base);
         }
         return value;
-    }
-
-    @Override
-    default T operate(T left, T right) {
-        return multiply(left, right);
     }
 }

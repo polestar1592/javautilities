@@ -21,23 +21,8 @@ public class PrimeGaloisField implements Field<Long> {
     }
 
     @Override
-    public Long minus(Long x) {
-        return canonicalize(-x);
-    }
-
-    @Override
     public Long getZero() {
         return ZERO;
-    }
-
-    @Override
-    public Long add(Long left, Long right) {
-        return canonicalize(canonicalize(left) + canonicalize(right));
-    }
-
-    @Override
-    public Long invert(Long x) {
-        return canonicalize(ExtendedEuclideanAlgorithm.calculateInverse(canonicalize(x), order));
     }
 
     @Override
@@ -46,8 +31,23 @@ public class PrimeGaloisField implements Field<Long> {
     }
 
     @Override
+    public Long add(Long left, Long right) {
+        return canonicalize(canonicalize(left) + canonicalize(right));
+    }
+
+    @Override
+    public Long negate(Long x) {
+        return canonicalize(-x);
+    }
+
+    @Override
     public Long multiply(Long left, Long right) {
         return canonicalize(canonicalize(left) * canonicalize(right));
+    }
+
+    @Override
+    public Long invert(Long x) {
+        return canonicalize(ExtendedEuclideanAlgorithm.calculateInverse(canonicalize(x), order));
     }
 
     // TODO override pow

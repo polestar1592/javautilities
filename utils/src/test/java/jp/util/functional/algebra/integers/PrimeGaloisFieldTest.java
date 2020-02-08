@@ -17,8 +17,8 @@ public class PrimeGaloisFieldTest {
 
     @Test
     public void testSubtraction() {
-        Assert.assertEquals(65535L, (long) FIELD.minus(65539L));
-        Assert.assertEquals(65532L, (long) FIELD.minus(5L));
+        Assert.assertEquals(65535L, (long) FIELD.negate(65539L));
+        Assert.assertEquals(65532L, (long) FIELD.negate(5L));
         Assert.assertEquals(5L, (long) FIELD.subtract(15537L, 15532L));
         Assert.assertEquals(65532L, (long) FIELD.subtract(15532L, 15537L));
     }
