@@ -1,5 +1,6 @@
 package jp.util.functional;
 
+import jp.util.functional.examples.ListFunctor;
 import org.junit.Assert;
 import org.junit.Test;
 
