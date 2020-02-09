@@ -41,16 +41,11 @@ public class CartesianVector {
     }
 
     public CartesianVector add(CartesianVector vector) {
-        return addSub(vector, true);
+        return new CartesianVector(x + vector.x, y + vector.y, z + vector.z);
     }
 
     public CartesianVector subtract(CartesianVector vector) {
-        return addSub(vector, false);
-    }
-
-    private CartesianVector addSub(CartesianVector vector, boolean isAdd) {
-        vector = isAdd ? vector : vector.invert();
-        return new CartesianVector(x + vector.x, y + vector.y, z + vector.z);
+        return add(vector.invert());
     }
 
     public CartesianVector multiplyBy(double k) {
@@ -69,20 +64,15 @@ public class CartesianVector {
         );
     }
 
-    boolean isZeroVector() {
+    public boolean isZeroVector() {
         return abs() == 0;
     }
 
-    boolean isParallelTo(CartesianVector vector) {
-        if (this.isZeroVector() || vector.isZeroVector()) {
-            return false;
-        }
-        CartesianVector n1 = this.normalize();
-        CartesianVector n2 = vector.normalize();
-        return n1.equals(n2) || n1.equals(n2.invert());
+    public boolean isParallelTo(CartesianVector vector) {
+        return this.cross(vector).isZeroVector();
     }
 
-    boolean isVerticalTo(CartesianVector vector) {
+    public boolean isVerticalTo(CartesianVector vector) {
         if (this.isZeroVector() || vector.isZeroVector()) {
             return false;
         }
