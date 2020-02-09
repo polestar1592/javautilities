@@ -1,6 +1,8 @@
 package jp.util.iteratortools;
 
 
+import java.util.Iterator;
+import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
 public class IteratorTools {
@@ -27,5 +29,22 @@ public class IteratorTools {
 
     public static <T> Stream<T> repeat(T element) {
         return Stream.generate(() -> element);
+    }
+
+    public static <T> Stream<T> accumulate(Iterable<T> iterable, BinaryOperator<T> accumulator) {
+        Stream.Builder<T> builder = Stream.builder();
+        Iterator<T> iterator = iterable.iterator();
+        if (!iterator.hasNext()) {
+            return Stream.empty();
+        }
+
+        T t = iterator.next();
+        builder.add(t);
+
+        while (iterator.hasNext()) {
+            t = accumulator.apply(t, iterator.next());
+            builder.add(t);
+        }
+        return builder.build();
     }
 }
