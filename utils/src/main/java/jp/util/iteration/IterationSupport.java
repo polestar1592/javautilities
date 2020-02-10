@@ -1,13 +1,13 @@
-package jp.util.iteratortools;
+package jp.util.iteration;
 
 
 import java.util.Iterator;
 import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
 
-public class IteratorTools {
+public class IterationSupport {
 
-    private IteratorTools() {
+    private IterationSupport() {
     }
 
     public static Stream<Integer> count() {
