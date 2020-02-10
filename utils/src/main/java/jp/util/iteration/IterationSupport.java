@@ -3,6 +3,7 @@ package jp.util.iteration;
 
 import java.util.Iterator;
 import java.util.function.BinaryOperator;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class IterationSupport {
@@ -10,16 +11,16 @@ public class IterationSupport {
     private IterationSupport() {
     }
 
-    public static Stream<Integer> count() {
+    public static IntStream count() {
         return count(0);
     }
 
-    public static Stream<Integer> count(int start) {
+    public static IntStream count(int start) {
         return count(start, 1);
     }
 
-    public static Stream<Integer> count(int start, int step) {
-        return Stream.iterate(start, i -> i + step);
+    public static IntStream count(int start, int step) {
+        return IntStream.iterate(start, i -> i + step);
     }
 
     public static <T> Stream<T> cycle(Iterable<T> iterable) {

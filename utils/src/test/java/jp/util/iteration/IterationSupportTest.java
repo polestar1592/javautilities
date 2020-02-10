@@ -15,6 +15,7 @@ public class IterationSupportTest {
         {
             List<Integer> actual = IterationSupport.count()
                     .limit(5)
+                    .boxed()
                     .collect(Collectors.toList());
             List<Integer> expected = Arrays.asList(0, 1, 2, 3, 4);
             assertEquals(actual, expected);
@@ -22,6 +23,7 @@ public class IterationSupportTest {
         {
             List<Integer> actual = IterationSupport.count(5)
                     .limit(5)
+                    .boxed()
                     .collect(Collectors.toList());
             List<Integer> expected = Arrays.asList(5, 6, 7, 8, 9);
             assertEquals(actual, expected);
@@ -29,6 +31,7 @@ public class IterationSupportTest {
         {
             List<Integer> actual = IterationSupport.count(10, 2)
                     .limit(5)
+                    .boxed()
                     .collect(Collectors.toList());
             List<Integer> expected = Arrays.asList(10, 12, 14, 16, 18);
             assertEquals(actual, expected);
