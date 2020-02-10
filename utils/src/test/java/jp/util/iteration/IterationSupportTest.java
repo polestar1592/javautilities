@@ -40,9 +40,7 @@ public class IterationSupportTest {
 
     @Test
     public void test_cycle() {
-        IterationSupport.cycle(Arrays.asList(1, 2, 3))
-                .limit(10)
-                .forEach(System.out::println);
+        // TODO
     }
 
     @Test
