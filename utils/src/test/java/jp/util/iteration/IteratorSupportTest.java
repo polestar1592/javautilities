@@ -140,4 +140,36 @@ public class IteratorSupportTest {
         }
     }
 
+    @Test
+    public void test_product() {
+        List<Integer> ls = Arrays.asList(1, 2);
+        List<String> rs = Arrays.asList("hoge", "foo", "bar");
+        List<Boolean> ms = Arrays.asList(true, false);
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.product(ls, rs).iterator();
+            assertEquals(Pair.of(1, "hoge"), it.next());
+            assertEquals(Pair.of(1, "foo"), it.next());
+            assertEquals(Pair.of(1, "bar"), it.next());
+            assertEquals(Pair.of(2, "hoge"), it.next());
+            assertEquals(Pair.of(2, "foo"), it.next());
+            assertEquals(Pair.of(2, "bar"), it.next());
+            assertFalse(it.hasNext());
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.product(ls, ms, rs).iterator();
+            assertEquals(Triple.of(1, true, "hoge"), it.next());
+            assertEquals(Triple.of(1, true, "foo"), it.next());
+            assertEquals(Triple.of(1, true, "bar"), it.next());
+            assertEquals(Triple.of(1, false, "hoge"), it.next());
+            assertEquals(Triple.of(1, false, "foo"), it.next());
+            assertEquals(Triple.of(1, false, "bar"), it.next());
+            assertEquals(Triple.of(2, true, "hoge"), it.next());
+            assertEquals(Triple.of(2, true, "foo"), it.next());
+            assertEquals(Triple.of(2, true, "bar"), it.next());
+            assertEquals(Triple.of(2, false, "hoge"), it.next());
+            assertEquals(Triple.of(2, false, "foo"), it.next());
+            assertEquals(Triple.of(2, false, "bar"), it.next());
+            assertFalse(it.hasNext());
+        }
+    }
 }

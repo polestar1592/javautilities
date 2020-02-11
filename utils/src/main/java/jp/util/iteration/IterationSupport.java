@@ -157,4 +157,86 @@ public class IterationSupport {
             }
         };
     }
+
+    public static <L, R> Iterable<Pair<L, R>> product(Iterable<L> ls, Iterable<R> rs) {
+        return () -> new Iterator<Pair<L, R>>() {
+
+            Iterator<L> lit;
+
+            Iterator<R> rit;
+
+            L lc;
+
+            {
+                lit = ls.iterator();
+                rit = rs.iterator();
+                if (lit.hasNext())
+                    lc = lit.next();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return lit.hasNext() && rit.hasNext();
+            }
+
+            @Override
+            public Pair<L, R> next() {
+                if (rit.hasNext()) {
+                    return Pair.of(lc, rit.next());
+                }
+                rit = rs.iterator();
+
+                lc = lit.next();
+                return Pair.of(lc, rit.next());
+            }
+        };
+    }
+
+    public static <L, M, R> Iterable<Triple<L, M, R>> product(Iterable<L> ls, Iterable<M> ms, Iterable<R> rs) {
+        return () -> new Iterator<Triple<L, M, R>>() {
+
+            Iterator<L> lit;
+
+            Iterator<M> mit;
+
+            Iterator<R> rit;
+
+            L lc;
+
+            M mc;
+
+            {
+                lit = ls.iterator();
+                mit = ms.iterator();
+                rit = rs.iterator();
+                if (lit.hasNext())
+                    lc = lit.next();
+                if (mit.hasNext())
+                    mc = mit.next();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return lit.hasNext() && mit.hasNext() && rit.hasNext();
+            }
+
+            @Override
+            public Triple<L, M, R> next() {
+                if (rit.hasNext()) {
+                    return Triple.of(lc, mc, rit.next());
+                }
+                rit = rs.iterator();
+
+                if (mit.hasNext()) {
+                    mc = mit.next();
+                    return Triple.of(lc, mc, rit.next());
+                }
+                mit = ms.iterator();
+                mc = mit.next();
+
+                lc = lit.next();
+                return Triple.of(lc, mc, rit.next());
+            }
+        };
+    }
 }
