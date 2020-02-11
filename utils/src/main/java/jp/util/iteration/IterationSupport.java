@@ -176,7 +176,7 @@ public class IterationSupport {
 
             @Override
             public boolean hasNext() {
-                return lit.hasNext() && rit.hasNext();
+                return lit.hasNext() || rit.hasNext();
             }
 
             @Override
@@ -217,7 +217,7 @@ public class IterationSupport {
 
             @Override
             public boolean hasNext() {
-                return lit.hasNext() && mit.hasNext() && rit.hasNext();
+                return lit.hasNext() || mit.hasNext() || rit.hasNext();
             }
 
             @Override

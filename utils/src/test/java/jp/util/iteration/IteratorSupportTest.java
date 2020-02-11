@@ -9,8 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class IteratorSupportTest {
 
@@ -147,27 +146,45 @@ public class IteratorSupportTest {
         List<Boolean> ms = Arrays.asList(true, false);
         {
             Iterator<Pair<Integer, String>> it = IterationSupport.product(ls, rs).iterator();
+            assertTrue(it.hasNext());
             assertEquals(Pair.of(1, "hoge"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Pair.of(1, "foo"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Pair.of(1, "bar"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Pair.of(2, "hoge"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Pair.of(2, "foo"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Pair.of(2, "bar"), it.next());
             assertFalse(it.hasNext());
         }
         {
             Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.product(ls, ms, rs).iterator();
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(1, true, "hoge"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(1, true, "foo"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(1, true, "bar"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(1, false, "hoge"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(1, false, "foo"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(1, false, "bar"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(2, true, "hoge"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(2, true, "foo"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(2, true, "bar"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(2, false, "hoge"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(2, false, "foo"), it.next());
+            assertTrue(it.hasNext());
             assertEquals(Triple.of(2, false, "bar"), it.next());
             assertFalse(it.hasNext());
         }
