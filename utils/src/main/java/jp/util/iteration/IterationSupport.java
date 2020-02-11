@@ -1,23 +1,23 @@
-package jp.util.iterator;
+package jp.util.iteration;
 
 
 import java.util.Iterator;
 
-public class IteratorSupport {
+public class IterationSupport {
 
-    private IteratorSupport() {
+    private IterationSupport() {
     }
 
-    public static Iterator<Integer> count() {
+    public static Iterable<Integer> count() {
         return count(0);
     }
 
-    public static Iterator<Integer> count(int start) {
+    public static Iterable<Integer> count(int start) {
         return count(start, 1);
     }
 
-    public static Iterator<Integer> count(int start, int step) {
-        return new Iterator<Integer>() {
+    public static Iterable<Integer> count(int start, int step) {
+        return () -> new Iterator<Integer>() {
 
             private int i = start;
 
@@ -35,8 +35,8 @@ public class IteratorSupport {
         };
     }
 
-    public static <T> Iterator<T> cycle(Iterable<T> iterable) {
-        return new Iterator<T>() {
+    public static <T> Iterable<T> cycle(Iterable<T> iterable) {
+        return () -> new Iterator<T>() {
 
             private Iterator<T> it = iterable.iterator();
 
@@ -56,8 +56,8 @@ public class IteratorSupport {
         };
     }
 
-    public static <T> Iterator<T> repeat(T element) {
-        return new Iterator<T>() {
+    public static <T> Iterable<T> repeat(T element) {
+        return () -> new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return true;
