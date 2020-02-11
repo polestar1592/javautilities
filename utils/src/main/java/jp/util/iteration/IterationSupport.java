@@ -1,6 +1,9 @@
 package jp.util.iteration;
 
 
+import jp.util.functional.Pair;
+import jp.util.functional.Triple;
+
 import java.util.Iterator;
 
 public class IterationSupport {
@@ -66,6 +69,46 @@ public class IterationSupport {
             @Override
             public T next() {
                 return element;
+            }
+        };
+    }
+
+    public static <L, R> Iterable<Pair<L, R>> zip(Iterable<L> ls, Iterable<R> rs) {
+        return () -> new Iterator<Pair<L, R>>() {
+
+            Iterator<L> lit = ls.iterator();
+
+            Iterator<R> rit = rs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return lit.hasNext() && rit.hasNext();
+            }
+
+            @Override
+            public Pair<L, R> next() {
+                return Pair.of(lit.next(), rit.next());
+            }
+        };
+    }
+
+    public static <L, M, R> Iterable<Triple<L, M, R>> zip(Iterable<L> ls, Iterable<M> ms, Iterable<R> rs) {
+        return () -> new Iterator<Triple<L, M, R>>() {
+
+            Iterator<L> lit = ls.iterator();
+
+            Iterator<M> mit = ms.iterator();
+
+            Iterator<R> rit = rs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return lit.hasNext() && mit.hasNext() && rit.hasNext();
+            }
+
+            @Override
+            public Triple<L, M, R> next() {
+                return Triple.of(lit.next(), mit.next(), rit.next());
             }
         };
     }
