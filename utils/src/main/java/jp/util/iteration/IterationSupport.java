@@ -2,9 +2,14 @@ package jp.util.iteration;
 
 
 import jp.util.functional.Pair;
+import jp.util.functional.TriFunction;
 import jp.util.functional.Triple;
 
 import java.util.Iterator;
+import java.util.Spliterators;
+import java.util.function.BiFunction;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class IterationSupport {
 
@@ -74,32 +79,72 @@ public class IterationSupport {
     }
 
     public static <L, R> Iterable<Pair<L, R>> zip(Iterable<L> ls, Iterable<R> rs) {
-        return () -> new Iterator<Pair<L, R>>() {
+        return () -> zip(ls.iterator(), rs.iterator());
+    }
 
-            Iterator<L> lit = ls.iterator();
 
-            Iterator<R> rit = rs.iterator();
+    public static <L, R, T> Iterable<T> zip(Iterable<L> ls, Iterable<R> rs, BiFunction<? super L, ? super R, ? extends T> merger) {
+        return () -> zip(ls.iterator(), rs.iterator(), merger);
+    }
 
+    // 受け取ったストリームは一旦閉じるので注意。
+    public static <L, R> Stream<Pair<L, R>> zip(Stream<L> ls, Stream<R> rs) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(zip(ls.iterator(), rs.iterator()), 0), false);
+    }
+
+    // 受け取ったストリームは一旦閉じるので注意。
+    public static <L, R, T> Stream<T> zip(Stream<L> ls, Stream<R> rs, BiFunction<? super L, ? super R, ? extends T> merger) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(zip(ls.iterator(), rs.iterator(), merger), 0), false);
+    }
+
+
+    public static <L, R> Iterator<Pair<L, R>> zip(Iterator<L> lit, Iterator<R> rit) {
+        return zip(lit, rit, Pair::of);
+    }
+
+
+    public static <L, R, T> Iterator<T> zip(Iterator<L> lit, Iterator<R> rit, BiFunction<? super L, ? super R, ? extends T> merger) {
+        return new Iterator<T>() {
             @Override
             public boolean hasNext() {
                 return lit.hasNext() && rit.hasNext();
             }
 
             @Override
-            public Pair<L, R> next() {
-                return Pair.of(lit.next(), rit.next());
+            public T next() {
+                return merger.apply(lit.next(), rit.next());
             }
         };
     }
 
     public static <L, M, R> Iterable<Triple<L, M, R>> zip(Iterable<L> ls, Iterable<M> ms, Iterable<R> rs) {
-        return () -> new Iterator<Triple<L, M, R>>() {
+        return () -> zip(ls.iterator(), ms.iterator(), rs.iterator());
+    }
 
-            Iterator<L> lit = ls.iterator();
+    public static <L, M, R, T> Iterable<T> zip(Iterable<L> ls, Iterable<M> ms, Iterable<R> rs, TriFunction<L, M, R, T> merger) {
+        return () -> zip(ls.iterator(), ms.iterator(), rs.iterator(), merger);
+    }
 
-            Iterator<M> mit = ms.iterator();
+    // 受け取ったストリームは一旦閉じるので注意。
+    public static <L, M, R> Stream<Triple<L, M, R>> zip(Stream<L> ls, Stream<M> ms, Stream<R> rs) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(zip(ls.iterator(), ms.iterator(), rs.iterator()), 0), false);
+    }
 
-            Iterator<R> rit = rs.iterator();
+    // 受け取ったストリームは一旦閉じるので注意。
+    public static <L, M, R, T> Stream<T> zip(Stream<L> ls, Stream<M> ms, Stream<R> rs, TriFunction<L, M, R, T> merger) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(zip(ls.iterator(), ms.iterator(), rs.iterator(), merger), 0), false);
+    }
+
+    public static <L, M, R> Iterator<Triple<L, M, R>> zip(Iterator<L> lit, Iterator<M> mit, Iterator<R> rit) {
+        return zip(lit, mit, rit, Triple::of);
+    }
+
+    public static <L, M, R, T> Iterator<T> zip(Iterator<L> lit, Iterator<M> mit, Iterator<R> rit, TriFunction<L, M, R, T> merger) {
+        return new Iterator<T>() {
 
             @Override
             public boolean hasNext() {
@@ -107,8 +152,8 @@ public class IterationSupport {
             }
 
             @Override
-            public Triple<L, M, R> next() {
-                return Triple.of(lit.next(), mit.next(), rit.next());
+            public T next() {
+                return merger.apply(lit.next(), mit.next(), rit.next());
             }
         };
     }
