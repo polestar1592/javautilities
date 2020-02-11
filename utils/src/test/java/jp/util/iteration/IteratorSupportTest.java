@@ -67,9 +67,10 @@ public class IteratorSupportTest {
 
     @Test
     public void test_zip() {
+        List<Integer> ls = Arrays.asList(1, 2, 3, 4, 5);
+        List<String> rs = Arrays.asList("hoge", "foo", "bar");
+        List<Boolean> ms = Arrays.asList(true, false, false, false, true);
         {
-            List<Integer> ls = Arrays.asList(1, 2, 3, 4, 5);
-            List<String> rs = Arrays.asList("hoge", "foo", "bar");
             Iterator<Pair<Integer, String>> it = IterationSupport.zip(ls, rs).iterator();
             assertEquals(Pair.of(1, "hoge"), it.next());
             assertEquals(Pair.of(2, "foo"), it.next());
@@ -77,10 +78,21 @@ public class IteratorSupportTest {
             assertFalse(it.hasNext());
         }
         {
-            List<Integer> ls = Arrays.asList(1, 2, 3, 4, 5);
-            List<Boolean> ms = Arrays.asList(true, false, false, false, true);
-            List<String> rs = Arrays.asList("hoge", "foo", "bar");
             Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(ls, ms, rs).iterator();
+            assertEquals(Triple.of(1, true, "hoge"), it.next());
+            assertEquals(Triple.of(2, false, "foo"), it.next());
+            assertEquals(Triple.of(3, false, "bar"), it.next());
+            assertFalse(it.hasNext());
+        }
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.zip(ls.stream(), rs.stream()).iterator();
+            assertEquals(Pair.of(1, "hoge"), it.next());
+            assertEquals(Pair.of(2, "foo"), it.next());
+            assertEquals(Pair.of(3, "bar"), it.next());
+            assertFalse(it.hasNext());
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(ls.stream(), ms.stream(), rs.stream()).iterator();
             assertEquals(Triple.of(1, true, "hoge"), it.next());
             assertEquals(Triple.of(2, false, "foo"), it.next());
             assertEquals(Triple.of(3, false, "bar"), it.next());

@@ -5,6 +5,9 @@ import jp.util.functional.Pair;
 import jp.util.functional.Triple;
 
 import java.util.Iterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class IterationSupport {
 
@@ -74,12 +77,17 @@ public class IterationSupport {
     }
 
     public static <L, R> Iterable<Pair<L, R>> zip(Iterable<L> ls, Iterable<R> rs) {
-        return () -> new Iterator<Pair<L, R>>() {
+        return () -> zip(ls.iterator(), rs.iterator());
+    }
 
-            Iterator<L> lit = ls.iterator();
+    // 受け取ったストリームは一旦閉じるので注意。
+    public static <L, R> Stream<Pair<L, R>> zip(Stream<L> ls, Stream<R> rs) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(zip(ls.iterator(), rs.iterator()), 0), false);
+    }
 
-            Iterator<R> rit = rs.iterator();
-
+    public static <L, R> Iterator<Pair<L, R>> zip(Iterator<L> lit, Iterator<R> rit) {
+        return new Iterator<Pair<L, R>>() {
             @Override
             public boolean hasNext() {
                 return lit.hasNext() && rit.hasNext();
@@ -93,13 +101,17 @@ public class IterationSupport {
     }
 
     public static <L, M, R> Iterable<Triple<L, M, R>> zip(Iterable<L> ls, Iterable<M> ms, Iterable<R> rs) {
-        return () -> new Iterator<Triple<L, M, R>>() {
+        return () -> zip(ls.iterator(), ms.iterator(), rs.iterator());
+    }
 
-            Iterator<L> lit = ls.iterator();
+    // 受け取ったストリームは一旦閉じるので注意。
+    public static <L, M, R> Stream<Triple<L, M, R>> zip(Stream<L> ls, Stream<M> ms, Stream<R> rs) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(zip(ls.iterator(), ms.iterator(), rs.iterator()), 0), false);
+    }
 
-            Iterator<M> mit = ms.iterator();
-
-            Iterator<R> rit = rs.iterator();
+    public static <L, M, R> Iterator<Triple<L, M, R>> zip(Iterator<L> lit, Iterator<M> mit, Iterator<R> rit) {
+        return new Iterator<Triple<L, M, R>>() {
 
             @Override
             public boolean hasNext() {
