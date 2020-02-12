@@ -6,6 +6,7 @@ import jp.util.functional.TriFunction;
 import jp.util.functional.Triple;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -168,10 +169,14 @@ public class IterationSupport {
             L lc;
 
             {
-                lit = ls.iterator();
-                rit = rs.iterator();
-                if (lit.hasNext())
+                if (ls.iterator().hasNext() && rs.iterator().hasNext()) {
+                    lit = ls.iterator();
+                    rit = rs.iterator();
                     lc = lit.next();
+                } else {
+                    lit = emptyIterator();
+                    rit = emptyIterator();
+                }
             }
 
             @Override
@@ -181,6 +186,9 @@ public class IterationSupport {
 
             @Override
             public Pair<L, R> next() {
+                if (!hasNext())
+                    throw new NoSuchElementException();
+
                 if (rit.hasNext()) {
                     return Pair.of(lc, rit.next());
                 }
@@ -206,13 +214,17 @@ public class IterationSupport {
             M mc;
 
             {
-                lit = ls.iterator();
-                mit = ms.iterator();
-                rit = rs.iterator();
-                if (lit.hasNext())
+                if (ls.iterator().hasNext() && ms.iterator().hasNext() && rs.iterator().hasNext()) {
+                    lit = ls.iterator();
+                    mit = ms.iterator();
+                    rit = rs.iterator();
                     lc = lit.next();
-                if (mit.hasNext())
                     mc = mit.next();
+                } else {
+                    lit = emptyIterator();
+                    mit = emptyIterator();
+                    rit = emptyIterator();
+                }
             }
 
             @Override
@@ -222,6 +234,9 @@ public class IterationSupport {
 
             @Override
             public Triple<L, M, R> next() {
+                if (!hasNext())
+                    throw new NoSuchElementException();
+
                 if (rit.hasNext()) {
                     return Triple.of(lc, mc, rit.next());
                 }
@@ -236,6 +251,20 @@ public class IterationSupport {
 
                 lc = lit.next();
                 return Triple.of(lc, mc, rit.next());
+            }
+        };
+    }
+
+    private static <T> Iterator<T> emptyIterator() {
+        return new Iterator<T>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public T next() {
+                return null;
             }
         };
     }
