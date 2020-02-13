@@ -20,52 +20,58 @@ public class IteratorSupportTest {
     public void test_count() {
         {
             Iterator<Integer> it = IterationSupport.count().iterator();
-            assertEquals(0, (int) it.next());
-            assertEquals(1, (int) it.next());
-            assertEquals(2, (int) it.next());
-            assertEquals(3, (int) it.next());
-            assertEquals(4, (int) it.next());
+            assertNext(0, it);
+            assertNext(1, it);
+            assertNext(2, it);
+            assertNext(3, it);
+            assertNext(4, it);
         }
         {
             Iterator<Integer> it = IterationSupport.count(5).iterator();
-            assertEquals(5, (int) it.next());
-            assertEquals(6, (int) it.next());
-            assertEquals(7, (int) it.next());
-            assertEquals(8, (int) it.next());
-            assertEquals(9, (int) it.next());
+            assertNext(5, it);
+            assertNext(6, it);
+            assertNext(7, it);
+            assertNext(8, it);
+            assertNext(9, it);
         }
         {
             Iterator<Integer> it = IterationSupport.count(10, 2).iterator();
-            assertEquals(10, (int) it.next());
-            assertEquals(12, (int) it.next());
-            assertEquals(14, (int) it.next());
-            assertEquals(16, (int) it.next());
-            assertEquals(18, (int) it.next());
+            assertNext(10, it);
+            assertNext(12, it);
+            assertNext(14, it);
+            assertNext(16, it);
+            assertNext(18, it);
         }
     }
 
     @Test
     public void test_cycle() {
-        Iterator<Integer> it = IterationSupport.cycle(Arrays.asList(1, 2, 3)).iterator();
-        assertEquals(1, (int) it.next());
-        assertEquals(2, (int) it.next());
-        assertEquals(3, (int) it.next());
-        assertEquals(1, (int) it.next());
-        assertEquals(2, (int) it.next());
-        assertEquals(3, (int) it.next());
-        assertEquals(1, (int) it.next());
-        assertEquals(2, (int) it.next());
-        assertEquals(3, (int) it.next());
+        {
+            Iterator<Integer> it = IterationSupport.cycle(Arrays.asList(1, 2, 3)).iterator();
+            assertNext(1, it);
+            assertNext(2, it);
+            assertNext(3, it);
+            assertNext(1, it);
+            assertNext(2, it);
+            assertNext(3, it);
+            assertNext(1, it);
+            assertNext(2, it);
+            assertNext(3, it);
+        }
+        {
+            Iterator<Integer> it = IterationSupport.cycle(EMPTY_INTEGER_LIST).iterator();
+            assertNextFailed(it);
+        }
     }
 
     @Test
     public void test_repeat() {
         Iterator<Integer> it = IterationSupport.repeat(1).iterator();
-        assertEquals(1, (int) it.next());
-        assertEquals(1, (int) it.next());
-        assertEquals(1, (int) it.next());
-        assertEquals(1, (int) it.next());
-        assertEquals(1, (int) it.next());
+        assertNext(1, it);
+        assertNext(1, it);
+        assertNext(1, it);
+        assertNext(1, it);
+        assertNext(1, it);
     }
 
     @Test
@@ -75,31 +81,51 @@ public class IteratorSupportTest {
         List<Boolean> ms = Arrays.asList(true, false, false, false, true);
         {
             Iterator<Pair<Integer, String>> it = IterationSupport.zip(ls, rs).iterator();
-            assertEquals(Pair.of(1, "hoge"), it.next());
-            assertEquals(Pair.of(2, "foo"), it.next());
-            assertEquals(Pair.of(3, "bar"), it.next());
-            assertFalse(it.hasNext());
+            assertNext(Pair.of(1, "hoge"), it);
+            assertNext(Pair.of(2, "foo"), it);
+            assertNext(Pair.of(3, "bar"), it);
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.zip(EMPTY_INTEGER_LIST, rs).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.zip(ls, EMPTY_STRING_LIST).iterator();
+            assertNextFailed(it);
         }
         {
             Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(ls, ms, rs).iterator();
-            assertEquals(Triple.of(1, true, "hoge"), it.next());
-            assertEquals(Triple.of(2, false, "foo"), it.next());
-            assertEquals(Triple.of(3, false, "bar"), it.next());
-            assertFalse(it.hasNext());
+            assertNext(Triple.of(1, true, "hoge"), it);
+            assertNext(Triple.of(2, false, "foo"), it);
+            assertNext(Triple.of(3, false, "bar"), it);
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(EMPTY_INTEGER_LIST, ms, rs).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(ls, EMPTY_BOOLEAN_LIST, rs).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(ls, ms, EMPTY_STRING_LIST).iterator();
+            assertNextFailed(it);
         }
         {
             Iterator<Pair<Integer, String>> it = IterationSupport.zip(ls.stream(), rs.stream()).iterator();
-            assertEquals(Pair.of(1, "hoge"), it.next());
-            assertEquals(Pair.of(2, "foo"), it.next());
-            assertEquals(Pair.of(3, "bar"), it.next());
-            assertFalse(it.hasNext());
+            assertNext(Pair.of(1, "hoge"), it);
+            assertNext(Pair.of(2, "foo"), it);
+            assertNext(Pair.of(3, "bar"), it);
+            assertNextFailed(it);
         }
         {
             Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.zip(ls.stream(), ms.stream(), rs.stream()).iterator();
-            assertEquals(Triple.of(1, true, "hoge"), it.next());
-            assertEquals(Triple.of(2, false, "foo"), it.next());
-            assertEquals(Triple.of(3, false, "bar"), it.next());
-            assertFalse(it.hasNext());
+            assertNext(Triple.of(1, true, "hoge"), it);
+            assertNext(Triple.of(2, false, "foo"), it);
+            assertNext(Triple.of(3, false, "bar"), it);
+            assertNextFailed(it);
         }
     }
 
@@ -111,34 +137,59 @@ public class IteratorSupportTest {
         {
             Iterator<String> it = IterationSupport.zip(ls, rs,
                     (a, b) -> String.join("|", Objects.toString(a), Objects.toString(b))).iterator();
-            assertEquals("1|hoge", it.next());
-            assertEquals("2|foo", it.next());
-            assertEquals("3|bar", it.next());
-            assertFalse(it.hasNext());
+            assertNext("1|hoge", it);
+            assertNext("2|foo", it);
+            assertNext("3|bar", it);
+            assertNextFailed(it);
+        }
+        {
+            Iterator<String> it = IterationSupport.zip(EMPTY_INTEGER_LIST, rs,
+                    (a, b) -> String.join("|", Objects.toString(a), Objects.toString(b))).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<String> it = IterationSupport.zip(ls, EMPTY_STRING_LIST,
+                    (a, b) -> String.join("|", Objects.toString(a), Objects.toString(b))).iterator();
+            assertNextFailed(it);
         }
         {
             Iterator<String> it = IterationSupport.zip(ls, ms, rs,
                     (a, b, c) -> String.join("|", Objects.toString(a), Objects.toString(b), Objects.toString(c))).iterator();
-            assertEquals("1|true|hoge", it.next());
-            assertEquals("2|false|foo", it.next());
-            assertEquals("3|false|bar", it.next());
-            assertFalse(it.hasNext());
+            assertNext("1|true|hoge", it);
+            assertNext("2|false|foo", it);
+            assertNext("3|false|bar", it);
+            assertNextFailed(it);
+        }
+        {
+            Iterator<String> it = IterationSupport.zip(EMPTY_INTEGER_LIST, ms, rs,
+                    (a, b, c) -> String.join("|", Objects.toString(a), Objects.toString(b), Objects.toString(c))).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<String> it = IterationSupport.zip(ls, EMPTY_BOOLEAN_LIST, rs,
+                    (a, b, c) -> String.join("|", Objects.toString(a), Objects.toString(b), Objects.toString(c))).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<String> it = IterationSupport.zip(ls, ms, EMPTY_STRING_LIST,
+                    (a, b, c) -> String.join("|", Objects.toString(a), Objects.toString(b), Objects.toString(c))).iterator();
+            assertNextFailed(it);
         }
         {
             Iterator<String> it = IterationSupport.zip(ls.stream(), rs.stream(),
                     (a, b) -> String.join("|", Objects.toString(a), Objects.toString(b))).iterator();
-            assertEquals("1|hoge", it.next());
-            assertEquals("2|foo", it.next());
-            assertEquals("3|bar", it.next());
-            assertFalse(it.hasNext());
+            assertNext("1|hoge", it);
+            assertNext("2|foo", it);
+            assertNext("3|bar", it);
+            assertNextFailed(it);
         }
         {
             Iterator<String> it = IterationSupport.zip(ls.stream(), ms.stream(), rs.stream(),
                     (a, b, c) -> String.join("|", Objects.toString(a), Objects.toString(b), Objects.toString(c))).iterator();
-            assertEquals("1|true|hoge", it.next());
-            assertEquals("2|false|foo", it.next());
-            assertEquals("3|false|bar", it.next());
-            assertFalse(it.hasNext());
+            assertNext("1|true|hoge", it);
+            assertNext("2|false|foo", it);
+            assertNext("3|false|bar", it);
+            assertNextFailed(it);
         }
     }
 
