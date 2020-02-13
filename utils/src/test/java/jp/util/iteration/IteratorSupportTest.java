@@ -4,15 +4,17 @@ import jp.util.functional.Pair;
 import jp.util.functional.Triple;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class IteratorSupportTest {
+
+    private static final List<String> EMPTY_STRING_LIST = new ArrayList<>();
+
+    private static final List<Integer> EMPTY_INTEGER_LIST = new ArrayList<>();
+
+    private static final List<Boolean> EMPTY_BOOLEAN_LIST = new ArrayList<>();
 
     @Test
     public void test_count() {
@@ -140,4 +142,70 @@ public class IteratorSupportTest {
         }
     }
 
+    @Test
+    public void test_product() {
+        List<Integer> ls = Arrays.asList(1, 2);
+        List<String> rs = Arrays.asList("hoge", "foo", "bar");
+        List<Boolean> ms = Arrays.asList(true, false);
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.product(ls, rs).iterator();
+            assertNext(Pair.of(1, "hoge"), it);
+            assertNext(Pair.of(1, "foo"), it);
+            assertNext(Pair.of(1, "bar"), it);
+            assertNext(Pair.of(2, "hoge"), it);
+            assertNext(Pair.of(2, "foo"), it);
+            assertNext(Pair.of(2, "bar"), it);
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.product(EMPTY_INTEGER_LIST, rs).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Pair<Integer, String>> it = IterationSupport.product(ls, EMPTY_STRING_LIST).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.product(ls, ms, rs).iterator();
+            assertNext(Triple.of(1, true, "hoge"), it);
+            assertNext(Triple.of(1, true, "foo"), it);
+            assertNext(Triple.of(1, true, "bar"), it);
+            assertNext(Triple.of(1, false, "hoge"), it);
+            assertNext(Triple.of(1, false, "foo"), it);
+            assertNext(Triple.of(1, false, "bar"), it);
+            assertNext(Triple.of(2, true, "hoge"), it);
+            assertNext(Triple.of(2, true, "foo"), it);
+            assertNext(Triple.of(2, true, "bar"), it);
+            assertNext(Triple.of(2, false, "hoge"), it);
+            assertNext(Triple.of(2, false, "foo"), it);
+            assertNext(Triple.of(2, false, "bar"), it);
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.product(EMPTY_INTEGER_LIST, ms, rs).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.product(ls, EMPTY_BOOLEAN_LIST, rs).iterator();
+            assertNextFailed(it);
+        }
+        {
+            Iterator<Triple<Integer, Boolean, String>> it = IterationSupport.product(ls, ms, EMPTY_STRING_LIST).iterator();
+            assertNextFailed(it);
+        }
+    }
+
+    private <T> void assertNext(T expected, Iterator<T> it) {
+        assertTrue(it.hasNext());
+        assertEquals(expected, it.next());
+    }
+
+    private <T> void assertNextFailed(Iterator<T> it) {
+        try {
+            it.next();
+            fail("NoSuchElementException is expected to be raised.");
+        } catch (NoSuchElementException e) {
+            // test is succeeded.
+        }
+    }
 }
