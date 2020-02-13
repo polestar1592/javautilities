@@ -45,6 +45,9 @@ public class IterationSupport {
     }
 
     public static <T> Iterable<T> cycle(Iterable<T> iterable) {
+        if (!iterable.iterator().hasNext())
+            return IterationSupport::emptyIterator;
+
         return () -> new Iterator<T>() {
 
             private Iterator<T> it = iterable.iterator();
@@ -60,7 +63,7 @@ public class IterationSupport {
                     return it.next();
                 }
                 it = iterable.iterator();
-                return next();
+                return it.next();
             }
         };
     }
@@ -160,6 +163,9 @@ public class IterationSupport {
     }
 
     public static <L, R> Iterable<Pair<L, R>> product(Iterable<L> ls, Iterable<R> rs) {
+        if (!ls.iterator().hasNext() || !rs.iterator().hasNext())
+            return IterationSupport::emptyIterator;
+
         return () -> new Iterator<Pair<L, R>>() {
 
             Iterator<L> lit;
@@ -169,14 +175,9 @@ public class IterationSupport {
             L lc;
 
             {
-                if (ls.iterator().hasNext() && rs.iterator().hasNext()) {
-                    lit = ls.iterator();
-                    rit = rs.iterator();
-                    lc = lit.next();
-                } else {
-                    lit = emptyIterator();
-                    rit = emptyIterator();
-                }
+                lit = ls.iterator();
+                rit = rs.iterator();
+                lc = lit.next();
             }
 
             @Override
@@ -186,9 +187,6 @@ public class IterationSupport {
 
             @Override
             public Pair<L, R> next() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
-
                 if (rit.hasNext()) {
                     return Pair.of(lc, rit.next());
                 }
@@ -201,6 +199,9 @@ public class IterationSupport {
     }
 
     public static <L, M, R> Iterable<Triple<L, M, R>> product(Iterable<L> ls, Iterable<M> ms, Iterable<R> rs) {
+        if (!ls.iterator().hasNext() || !ms.iterator().hasNext() || !rs.iterator().hasNext())
+            return IterationSupport::emptyIterator;
+
         return () -> new Iterator<Triple<L, M, R>>() {
 
             Iterator<L> lit;
@@ -214,17 +215,11 @@ public class IterationSupport {
             M mc;
 
             {
-                if (ls.iterator().hasNext() && ms.iterator().hasNext() && rs.iterator().hasNext()) {
-                    lit = ls.iterator();
-                    mit = ms.iterator();
-                    rit = rs.iterator();
-                    lc = lit.next();
-                    mc = mit.next();
-                } else {
-                    lit = emptyIterator();
-                    mit = emptyIterator();
-                    rit = emptyIterator();
-                }
+                lit = ls.iterator();
+                mit = ms.iterator();
+                rit = rs.iterator();
+                lc = lit.next();
+                mc = mit.next();
             }
 
             @Override
@@ -234,9 +229,6 @@ public class IterationSupport {
 
             @Override
             public Triple<L, M, R> next() {
-                if (!hasNext())
-                    throw new NoSuchElementException();
-
                 if (rit.hasNext()) {
                     return Triple.of(lc, mc, rit.next());
                 }
@@ -264,7 +256,7 @@ public class IterationSupport {
 
             @Override
             public T next() {
-                return null;
+                throw new NoSuchElementException();
             }
         };
     }
