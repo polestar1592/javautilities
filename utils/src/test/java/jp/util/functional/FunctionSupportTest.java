@@ -2,6 +2,7 @@ package jp.util.functional;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -62,6 +63,18 @@ public class FunctionSupportTest {
             assertFunction(TRI_FUNCTION, actual, false, "hoge", 0);
             assertFunction(TRI_FUNCTION, actual, false, "foo", 1);
             assertFunction(TRI_FUNCTION, actual, false, "bar", 2);
+        }
+    }
+
+    @Test
+    public void test_apply() {
+        {
+            List<String> actual = FunctionSupport.apply(BI_FUNCTION, Pair.of("hoge", 2));
+            assertEquals(Arrays.asList("hoge", "hoge"), actual);
+        }
+        {
+            List<String> actual = FunctionSupport.apply(TRI_FUNCTION, Triple.of(false, "foo", 2));
+            assertEquals(Collections.singletonList("foo2"), actual);
         }
     }
 
