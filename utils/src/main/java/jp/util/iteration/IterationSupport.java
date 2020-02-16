@@ -162,6 +162,88 @@ public class IterationSupport {
         };
     }
 
+    public static <L, R> Pair<Iterable<L>, Iterable<R>> unzip2(Iterable<Pair<L, R>> xs) {
+        Iterable<L> ls = () -> new Iterator<L>() {
+
+            Iterator<Pair<L, R>> it = xs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public L next() {
+                return it.next().getLeft();
+            }
+        };
+
+        Iterable<R> rs = () -> new Iterator<R>() {
+
+            Iterator<Pair<L, R>> it = xs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return it.next().getRight();
+            }
+        };
+        return Pair.of(ls, rs);
+    }
+
+    public static <L, M, R> Triple<Iterable<L>, Iterable<M>, Iterable<R>> unzip3(Iterable<Triple<L, M, R>> xs) {
+        Iterable<L> ls = () -> new Iterator<L>() {
+
+            Iterator<Triple<L, M, R>> it = xs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public L next() {
+                return it.next().getLeft();
+            }
+        };
+
+        Iterable<M> ms = () -> new Iterator<M>() {
+
+            Iterator<Triple<L, M, R>> it = xs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public M next() {
+                return it.next().getMiddle();
+            }
+        };
+
+        Iterable<R> rs = () -> new Iterator<R>() {
+
+            Iterator<Triple<L, M, R>> it = xs.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public R next() {
+                return it.next().getRight();
+            }
+        };
+
+        return Triple.of(ls, ms, rs);
+    }
+
     public static <L, R> Iterable<Pair<L, R>> product(Iterable<L> ls, Iterable<R> rs) {
         if (!ls.iterator().hasNext() || !rs.iterator().hasNext())
             return IterationSupport::emptyIterator;
