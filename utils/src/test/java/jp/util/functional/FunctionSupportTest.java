@@ -13,13 +13,16 @@ import static org.junit.Assert.assertEquals;
 
 public class FunctionSupportTest {
 
+    public static final BiFunction<String, Integer, List<String>> BI_FUNCTION = (s, i) ->
+            Stream.generate(() -> s).limit(i).collect(Collectors.toList());
+
+    public static final TriFunction<Boolean, String, Integer, List<String>> TRI_FUNCTION = (b, s, i) ->
+            b ? BI_FUNCTION.apply(s, i) : Collections.singletonList(s + i);
+
     @Test
     public void test_partial() {
-        BiFunction<String, Integer, List<String>> bf = (s, i) ->
-                Stream.generate(() -> s).limit(i).collect(Collectors.toList());
-        TriFunction<Boolean, String, Integer, List<String>> tf = (b, s, i) -> b ? bf.apply(s, i) : Collections.singletonList(s + i);
         {
-            Function<Integer, List<String>> actual = FunctionSupport.partial(bf, "hoge");
+            Function<Integer, List<String>> actual = FunctionSupport.partial(BI_FUNCTION, "hoge");
             Function<Integer, List<String>> expected = i ->
                     Stream.generate(() -> "hoge").limit(i).collect(Collectors.toList());
             assertFunction(expected, actual, 0);
@@ -27,14 +30,14 @@ public class FunctionSupportTest {
             assertFunction(expected, actual, 2);
         }
         {
-            BiFunction<String, Integer, List<String>> actual = FunctionSupport.partial(tf, false);
+            BiFunction<String, Integer, List<String>> actual = FunctionSupport.partial(TRI_FUNCTION, false);
             BiFunction<String, Integer, List<String>> expected = (s, i) -> Collections.singletonList(s + i);
             assertFunction(expected, actual, "hoge", 0);
             assertFunction(expected, actual, "foo", 1);
             assertFunction(expected, actual, "bar", 2);
         }
         {
-            Function<Integer, List<String>> actual = FunctionSupport.partial(tf, true, "hoge");
+            Function<Integer, List<String>> actual = FunctionSupport.partial(TRI_FUNCTION, true, "hoge");
             Function<Integer, List<String>> expected = i ->
                     Stream.generate(() -> "hoge").limit(i).collect(Collectors.toList());
             assertFunction(expected, actual, 0);
@@ -45,23 +48,20 @@ public class FunctionSupportTest {
 
     @Test
     public void test_curried() {
-        BiFunction<String, Integer, List<String>> bf = (s, i) ->
-                Stream.generate(() -> s).limit(i).collect(Collectors.toList());
-        TriFunction<Boolean, String, Integer, List<String>> tf = (b, s, i) -> b ? bf.apply(s, i) : Collections.singletonList(s + i);
         {
-            Function<String, Function<Integer, List<String>>> actual = FunctionSupport.curried(bf);
-            assertFunction(bf, actual, "hoge", 0);
-            assertFunction(bf, actual, "foo", 1);
-            assertFunction(bf, actual, "bar", 2);
+            Function<String, Function<Integer, List<String>>> actual = FunctionSupport.curried(BI_FUNCTION);
+            assertFunction(BI_FUNCTION, actual, "hoge", 0);
+            assertFunction(BI_FUNCTION, actual, "foo", 1);
+            assertFunction(BI_FUNCTION, actual, "bar", 2);
         }
         {
-            Function<Boolean, Function<String, Function<Integer, List<String>>>> actual = FunctionSupport.curried(tf);
-            assertFunction(tf, actual, true, "hoge", 0);
-            assertFunction(tf, actual, true, "foo", 1);
-            assertFunction(tf, actual, true, "bar", 2);
-            assertFunction(tf, actual, false, "hoge", 0);
-            assertFunction(tf, actual, false, "foo", 1);
-            assertFunction(tf, actual, false, "bar", 2);
+            Function<Boolean, Function<String, Function<Integer, List<String>>>> actual = FunctionSupport.curried(TRI_FUNCTION);
+            assertFunction(TRI_FUNCTION, actual, true, "hoge", 0);
+            assertFunction(TRI_FUNCTION, actual, true, "foo", 1);
+            assertFunction(TRI_FUNCTION, actual, true, "bar", 2);
+            assertFunction(TRI_FUNCTION, actual, false, "hoge", 0);
+            assertFunction(TRI_FUNCTION, actual, false, "foo", 1);
+            assertFunction(TRI_FUNCTION, actual, false, "bar", 2);
         }
     }
 
