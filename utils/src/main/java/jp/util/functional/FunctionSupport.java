@@ -29,18 +29,10 @@ public class FunctionSupport {
     }
 
     public static <T, U, R> R apply(BiFunction<T, U, R> f, Pair<T, U> pair) {
-        return apply(curried(f), pair);
-    }
-
-    public static <T, U, R> R apply(Function<T, Function<U, R>> f, Pair<T, U> pair) {
-        return f.apply(pair.getLeft()).apply(pair.getRight());
+        return f.apply(pair.getLeft(), pair.getRight());
     }
 
     public static <S, T, U, R> R apply(TriFunction<S, T, U, R> f, Triple<S, T, U> triple) {
-        return apply(curried(f), triple);
-    }
-
-    public static <S, T, U, R> R apply(Function<S, Function<T, Function<U, R>>> f, Triple<S, T, U> triple) {
-        return f.apply(triple.getLeft()).apply(triple.getMiddle()).apply(triple.getRight());
+        return f.apply(triple.getLeft(), triple.getMiddle(), triple.getRight());
     }
 }
