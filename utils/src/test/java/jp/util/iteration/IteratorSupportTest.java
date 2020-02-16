@@ -194,6 +194,71 @@ public class IteratorSupportTest {
     }
 
     @Test
+    public void test_unzip2() {
+        List<Pair<Integer, String>> pairs = Arrays.asList(
+                Pair.of(1, "hoge"),
+                Pair.of(2, "foo"),
+                Pair.of(3, "bar")
+        );
+        {
+            Pair<Iterable<Integer>, Iterable<String>> unzip2 = IterationSupport.unzip2(pairs);
+            Iterator<Integer> lit = unzip2.getLeft().iterator();
+            assertNext(1, lit);
+            assertNext(2, lit);
+            assertNext(3, lit);
+            assertNextFailed(lit);
+            Iterator<String> rit = unzip2.getRight().iterator();
+            assertNext("hoge", rit);
+            assertNext("foo", rit);
+            assertNext("bar", rit);
+            assertNextFailed(rit);
+        }
+        {
+            Pair<Iterable<Integer>, Iterable<String>> unzip = IterationSupport.unzip2(new ArrayList<>());
+            Iterator<Integer> lit = unzip.getLeft().iterator();
+            assertNextFailed(lit);
+            Iterator<String> rit = unzip.getRight().iterator();
+            assertNextFailed(rit);
+        }
+    }
+
+    @Test
+    public void test_unzip3() {
+        List<Triple<Integer, Boolean, String>> triples = Arrays.asList(
+                Triple.of(1, true, "hoge"),
+                Triple.of(2, true, "foo"),
+                Triple.of(3, false, "bar")
+        );
+        {
+            Triple<Iterable<Integer>, Iterable<Boolean>, Iterable<String>> unzip3 = IterationSupport.unzip3(triples);
+            Iterator<Integer> lit = unzip3.getLeft().iterator();
+            assertNext(1, lit);
+            assertNext(2, lit);
+            assertNext(3, lit);
+            assertNextFailed(lit);
+            Iterator<Boolean> mit = unzip3.getMiddle().iterator();
+            assertNext(true, mit);
+            assertNext(true, mit);
+            assertNext(false, mit);
+            assertNextFailed(mit);
+            Iterator<String> rit = unzip3.getRight().iterator();
+            assertNext("hoge", rit);
+            assertNext("foo", rit);
+            assertNext("bar", rit);
+            assertNextFailed(rit);
+        }
+        {
+            Triple<Iterable<Integer>, Iterable<Boolean>, Iterable<String>> unzip3 = IterationSupport.unzip3(new ArrayList<>());
+            Iterator<Integer> lit = unzip3.getLeft().iterator();
+            assertNextFailed(lit);
+            Iterator<Boolean> mit = unzip3.getMiddle().iterator();
+            assertNextFailed(mit);
+            Iterator<String> rit = unzip3.getRight().iterator();
+            assertNextFailed(rit);
+        }
+    }
+
+    @Test
     public void test_product() {
         List<Integer> ls = Arrays.asList(1, 2);
         List<String> rs = Arrays.asList("hoge", "foo", "bar");
