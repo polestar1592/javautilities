@@ -50,13 +50,13 @@ public class FunctionSupportTest {
     @Test
     public void test_curried() {
         {
-            Function<String, Function<Integer, List<String>>> actual = FunctionSupport.curried(BI_FUNCTION);
+            Function<String, Function<Integer, List<String>>> actual = FunctionSupport.curry(BI_FUNCTION);
             assertFunction(BI_FUNCTION, actual, "hoge", 0);
             assertFunction(BI_FUNCTION, actual, "foo", 1);
             assertFunction(BI_FUNCTION, actual, "bar", 2);
         }
         {
-            Function<Boolean, Function<String, Function<Integer, List<String>>>> actual = FunctionSupport.curried(TRI_FUNCTION);
+            Function<Boolean, Function<String, Function<Integer, List<String>>>> actual = FunctionSupport.curry(TRI_FUNCTION);
             assertFunction(TRI_FUNCTION, actual, true, "hoge", 0);
             assertFunction(TRI_FUNCTION, actual, true, "foo", 1);
             assertFunction(TRI_FUNCTION, actual, true, "bar", 2);

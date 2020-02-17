@@ -20,11 +20,11 @@ public class FunctionSupport {
         return u -> f.apply(s, t, u);
     }
 
-    public static <T, U, R> Function<T, Function<U, R>> curried(BiFunction<? super T, ? super U, ? extends R> f) {
+    public static <T, U, R> Function<T, Function<U, R>> curry(BiFunction<? super T, ? super U, ? extends R> f) {
         return t -> (u -> f.apply(t, u));
     }
 
-    public static <S, T, U, R> Function<S, Function<T, Function<U, R>>> curried(TriFunction<? super S, ? super T, ? super U, ? extends R> f) {
+    public static <S, T, U, R> Function<S, Function<T, Function<U, R>>> curry(TriFunction<? super S, ? super T, ? super U, ? extends R> f) {
         return s -> (t -> (u -> f.apply(s, t, u)));
     }
 
