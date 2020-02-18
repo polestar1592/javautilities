@@ -1,11 +1,21 @@
 package jp.util.functional;
 
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class FunctionSupport {
 
     private FunctionSupport() {
+    }
+
+    public static <T> Function<T, Boolean> fromPredicate(Predicate<? super T> predicate) {
+        return predicate::test;
+    }
+
+    public static <T, U> BiFunction<T, U, Boolean> fromPredicate(BiPredicate<? super T, ? super U> biPredicate) {
+        return biPredicate::test;
     }
 
     public static <T, U, R> Function<U, R> partial(BiFunction<? super T, ? super U, ? extends R> f, T t) {

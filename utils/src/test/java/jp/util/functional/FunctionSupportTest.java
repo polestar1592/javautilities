@@ -6,7 +6,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,11 +16,31 @@ import static org.junit.Assert.assertEquals;
 
 public class FunctionSupportTest {
 
+    public static final Predicate<String> PREDICATE = s -> s.startsWith("h");
+
+    public static final BiPredicate<String, Integer> BI_PREDICATE = (s, i) -> s.charAt(i) == 'o';
+
     public static final BiFunction<String, Integer, List<String>> BI_FUNCTION = (s, i) ->
             Stream.generate(() -> s).limit(i).collect(Collectors.toList());
 
     public static final TriFunction<Boolean, String, Integer, List<String>> TRI_FUNCTION = (b, s, i) ->
             b ? BI_FUNCTION.apply(s, i) : Collections.singletonList(s + i);
+
+    @Test
+    public void test_fromPredicate() {
+        {
+            Function<String, Boolean> actual = FunctionSupport.fromPredicate(PREDICATE);
+            assertFunction(PREDICATE, actual, "hoge");
+            assertFunction(PREDICATE, actual, "foo");
+        }
+        {
+            BiFunction<String, Integer, Boolean> actual = FunctionSupport.fromPredicate(BI_PREDICATE);
+            assertFunction(BI_PREDICATE, actual, "hoge", 1);
+            assertFunction(BI_PREDICATE, actual, "hoge", 2);
+            assertFunction(BI_PREDICATE, actual, "foo", 1);
+            assertFunction(BI_PREDICATE, actual, "foo", 2);
+        }
+    }
 
     @Test
     public void test_partial() {
@@ -76,6 +98,14 @@ public class FunctionSupportTest {
             List<String> actual = FunctionSupport.apply(TRI_FUNCTION, Triple.of(false, "foo", 2));
             assertEquals(Collections.singletonList("foo2"), actual);
         }
+    }
+
+    public <T> void assertFunction(Predicate<T> expected, Function<T, Boolean> actual, T t) {
+        assertEquals(expected.test(t), actual.apply(t));
+    }
+
+    public <T, U> void assertFunction(BiPredicate<T, U> expected, BiFunction<T, U, Boolean> actual, T t, U u) {
+        assertEquals(expected.test(t, u), actual.apply(t, u));
     }
 
     public <T, R> void assertFunction(Function<T, R> expected, Function<T, R> actual, T t) {
