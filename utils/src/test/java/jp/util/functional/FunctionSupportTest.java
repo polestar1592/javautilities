@@ -2,7 +2,6 @@ package jp.util.functional;
 
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
-public class FunctionSupportTest {
+public class FunctionSupportTest implements FunctionAssertionMixin {
 
     public static final Predicate<String> PREDICATE = s -> s.startsWith("h");
 
@@ -67,10 +66,16 @@ public class FunctionSupportTest {
             assertFunction(expected, actual, 1);
             assertFunction(expected, actual, 2);
         }
+        {
+            Predicate<Integer> actual = FunctionSupport.partial(BI_PREDICATE, "hoge");
+            Predicate<Integer> expected = i -> "hoge".charAt(i) == 'o';
+            assertFunction(expected, actual, 0);
+            assertFunction(expected, actual, 1);
+        }
     }
 
     @Test
-    public void test_curried() {
+    public void test_curry() {
         {
             Function<String, Function<Integer, List<String>>> actual = FunctionSupport.curry(BI_FUNCTION);
             assertFunction(BI_FUNCTION, actual, "hoge", 0);
@@ -86,41 +91,28 @@ public class FunctionSupportTest {
             assertFunction(TRI_FUNCTION, actual, false, "foo", 1);
             assertFunction(TRI_FUNCTION, actual, false, "bar", 2);
         }
+        {
+            Function<String, Predicate<Integer>> actual = FunctionSupport.curry(BI_PREDICATE);
+            assertFunction(BI_PREDICATE, actual, "hoge", 1);
+            assertFunction(BI_PREDICATE, actual, "hoge", 2);
+            assertFunction(BI_PREDICATE, actual, "foo", 1);
+            assertFunction(BI_PREDICATE, actual, "foo", 2);
+        }
     }
 
     @Test
     public void test_apply() {
         {
             List<String> actual = FunctionSupport.apply(BI_FUNCTION, Pair.of("hoge", 2));
-            assertEquals(Arrays.asList("hoge", "hoge"), actual);
+            assertEquals(BI_FUNCTION.apply("hoge", 2), actual);
         }
         {
             List<String> actual = FunctionSupport.apply(TRI_FUNCTION, Triple.of(false, "foo", 2));
-            assertEquals(Collections.singletonList("foo2"), actual);
+            assertEquals(TRI_FUNCTION.apply(false, "foo", 2), actual);
         }
-    }
-
-    public <T> void assertFunction(Predicate<T> expected, Function<T, Boolean> actual, T t) {
-        assertEquals(expected.test(t), actual.apply(t));
-    }
-
-    public <T, U> void assertFunction(BiPredicate<T, U> expected, BiFunction<T, U, Boolean> actual, T t, U u) {
-        assertEquals(expected.test(t, u), actual.apply(t, u));
-    }
-
-    public <T, R> void assertFunction(Function<T, R> expected, Function<T, R> actual, T t) {
-        assertEquals(expected.apply(t), actual.apply(t));
-    }
-
-    public <T, U, R> void assertFunction(BiFunction<T, U, R> expected, BiFunction<T, U, R> actual, T t, U u) {
-        assertEquals(expected.apply(t, u), actual.apply(t, u));
-    }
-
-    public <T, U, R> void assertFunction(BiFunction<T, U, R> expected, Function<T, Function<U, R>> actual, T t, U u) {
-        assertEquals(expected.apply(t, u), actual.apply(t).apply(u));
-    }
-
-    public <S, T, U, R> void assertFunction(TriFunction<S, T, U, R> expected, Function<S, Function<T, Function<U, R>>> actual, S s, T t, U u) {
-        assertEquals(expected.apply(s, t, u), actual.apply(s).apply(t).apply(u));
+        {
+            boolean actual = FunctionSupport.test(BI_PREDICATE, Pair.of("hoge", 1));
+            assertEquals(BI_PREDICATE.test("hoge", 1), actual);
+        }
     }
 }
